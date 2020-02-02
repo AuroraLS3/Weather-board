@@ -1,6 +1,8 @@
 package com.djrapitops.weather;
 
 import akka.actor.typed.Behavior;
+import akka.actor.typed.PostStop;
+import akka.actor.typed.Signal;
 import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
@@ -25,7 +27,12 @@ public class Bootstrapper extends AbstractBehavior<Bootstrapper.Initialize> {
     public Receive<Initialize> createReceive() {
         return newReceiveBuilder()
                 .onMessage(Initialize.class, this::onInitialize)
+                .onSignal(PostStop.class, this::onStop)
                 .build();
+    }
+
+    private <M extends Signal> Behavior<Initialize> onStop(M m) {
+        return this;
     }
 
     private Behavior<Initialize> onInitialize(Initialize command) {

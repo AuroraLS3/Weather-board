@@ -31,7 +31,7 @@ public class TemperatureSensor extends AbstractBehavior<TemperatureSensor.Comman
         this.deviceId = deviceId;
         this.random = new Random();
 
-        context.getLog().info("{} {}-{} started", groupId, deviceId, getClass().getSimpleName());
+        context.getLog().info("{} {}-{} started", getClass().getSimpleName(), groupId, deviceId);
     }
 
     /* ----------------------------------------------------- */
@@ -102,7 +102,7 @@ public class TemperatureSensor extends AbstractBehavior<TemperatureSensor.Comman
     }
 
     private <M extends Signal> TemperatureSensor onStop(M msg) {
-        getContext().getLog().info("{} {}-{} stopped", groupId, deviceId, getClass().getSimpleName());
+        getContext().getLog().info("{} {}-{} stopped", getClass().getSimpleName(), groupId, deviceId);
         return this;
     }
 
