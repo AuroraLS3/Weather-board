@@ -10,6 +10,7 @@ repositories {
 
 dependencies {
   compile 'com.typesafe.akka:akka-actor-typed_2.13:2.6.0'
+  compile 'com.typesafe.akka:akka-persistence-typed_2.13:2.6.3'
   compile 'ch.qos.logback:logback-classic:1.2.3'
   testCompile 'com.typesafe.akka:akka-actor-testkit-typed_2.13:2.6.0'
   testCompile 'junit:junit:4.12'
