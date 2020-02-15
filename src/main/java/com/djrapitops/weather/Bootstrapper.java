@@ -1,5 +1,6 @@
 package com.djrapitops.weather;
 
+import akka.actor.typed.ActorRef;
 import akka.actor.typed.Behavior;
 import akka.actor.typed.PostStop;
 import akka.actor.typed.Signal;
@@ -7,6 +8,9 @@ import akka.actor.typed.javadsl.AbstractBehavior;
 import akka.actor.typed.javadsl.ActorContext;
 import akka.actor.typed.javadsl.Behaviors;
 import akka.actor.typed.javadsl.Receive;
+import com.djrapitops.weather.sensor.SensorRegistry;
+
+import java.util.UUID;
 
 /**
  * Behavior to begin the process.
@@ -36,6 +40,11 @@ public class Bootstrapper extends AbstractBehavior<Bootstrapper.Initialize> {
     }
 
     private Behavior<Initialize> onInitialize(Initialize command) {
+        ActorRef<SensorRegistry.Command> sensorRegistry = getContext().spawn(SensorRegistry.create(), "sensor-registry");
+
+        UUID groupId = UUID.randomUUID();
+        UUID deviceId = UUID.randomUUID();
+        sensorRegistry.tell(new SensorRegistry.Register(groupId, deviceId, sensorRegistry.unsafeUpcast()));
         return this;
     }
 

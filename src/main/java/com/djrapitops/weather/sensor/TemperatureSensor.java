@@ -72,7 +72,7 @@ public class TemperatureSensor extends AbstractBehavior<TemperatureSensor.Comman
         }
     }
 
-    public static final class Measured implements Command {
+    public static final class Measured implements Command, MeasurerBot.Command {
         final long requestId;
 
         public Measured(long requestId) {

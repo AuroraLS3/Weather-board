@@ -37,10 +37,12 @@ public class SensorGroup extends AbstractBehavior<SensorGroup.Command> {
 
     private static final class SensorTerminated implements Command {
         final ActorRef<TemperatureSensor.Command> sensor;
+        final ActorRef<MeasurerBot.Command> bot;
         final UUID deviceId;
 
-        public SensorTerminated(ActorRef<TemperatureSensor.Command> sensor, UUID deviceId) {
+        public SensorTerminated(ActorRef<TemperatureSensor.Command> sensor, ActorRef<MeasurerBot.Command> bot, UUID deviceId) {
             this.sensor = sensor;
+            this.bot = bot;
             this.deviceId = deviceId;
         }
     }
@@ -59,8 +61,10 @@ public class SensorGroup extends AbstractBehavior<SensorGroup.Command> {
     private Behavior<Command> onRegister(SensorRegistry.Register msg) {
         if (groupId.equals(msg.groupId)) {
             ActorRef<TemperatureSensor.Command> sensor = sensors.computeIfAbsent(msg.deviceId, this::createNewSensor);
-            getContext().watchWith(sensor, new SensorTerminated(sensor, msg.deviceId));
+            ActorRef<MeasurerBot.Command> bot = getContext().spawn(MeasurerBot.create(sensor), "sensor-bot-" + msg.deviceId);
+            getContext().watchWith(sensor, new SensorTerminated(sensor, bot, msg.deviceId));
             msg.replyTo.tell(new SensorRegistry.Registered(sensor));
+            bot.tell(new MeasurerBot.Start());
         } else {
             getContext().getLog().warn(
                     "Ignoring Register for {}. This group is responsible for {}.", msg.groupId, this.groupId
@@ -78,6 +82,7 @@ public class SensorGroup extends AbstractBehavior<SensorGroup.Command> {
     private Behavior<Command> onUnregister(SensorTerminated msg) {
         getContext().getLog().info("Sensor for {} has been terminated", msg.deviceId);
         sensors.remove(msg.deviceId);
+        getContext().stop(msg.bot);
         return this;
     }
 
