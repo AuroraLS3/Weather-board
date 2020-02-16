@@ -10,7 +10,7 @@ import akka.actor.typed.ActorSystem;
 public class Start {
 
     public static void main(String[] args) {
-        ActorSystem<Bootstrapper.Initialize> system = ActorSystem.create(Bootstrapper.create(), "Bootstrapper");
+        ActorSystem<Bootstrapper.Command> system = ActorSystem.create(Bootstrapper.create(), "Bootstrapper");
 
         system.tell(new Bootstrapper.Initialize());
 

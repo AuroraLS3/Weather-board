@@ -94,9 +94,8 @@ public class TemperatureSensor extends AbstractBehavior<TemperatureSensor.Comman
     }
 
     private Behavior<Command> onMeasure(Measure msg) {
-        double measurement = random.nextInt(49) + random.nextDouble();
-        this.lastMeasurement = measurement;
-        getContext().getLog().info("Recorded measurement {} with {}", measurement, msg.requestId);
+        this.lastMeasurement = random.nextInt(49) + random.nextDouble();
+//  Spammy      getContext().getLog().info("Recorded measurement {} with {}", measurement, msg.requestId);
         msg.replyTo.tell(new Measured(msg.requestId));
         return this;
     }
