@@ -36,12 +36,12 @@ public class Bootstrapper extends AbstractBehavior<Bootstrapper.Command> {
     public Receive<Command> createReceive() {
         return newReceiveBuilder()
                 .onMessage(Initialize.class, this::onInitialize)
-                .onMessage(SystemInReader.FromSystemIn.class, this::onCmd)
+                .onMessage(SystemInReader.Publish.class, this::onCmd)
                 .onSignal(PostStop.class, this::onStop)
                 .build();
     }
 
-    private Behavior<Command> onCmd(SystemInReader.FromSystemIn msg) {
+    private Behavior<Command> onCmd(SystemInReader.Publish msg) {
         String line = msg.line;
         if (line.equals("stop")) return Behaviors.stopped();
         return this;

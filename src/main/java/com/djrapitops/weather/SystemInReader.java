@@ -28,7 +28,7 @@ public class SystemInReader extends AbstractBehavior<SystemInReader.Command> {
         return Behaviors.setup(SystemInReader::new);
     }
 
-    public static class SystemInSubscribers extends HashMap<UUID, ActorRef<FromSystemIn>> {}
+    public static class SystemInSubscribers extends HashMap<UUID, ActorRef<Publish>> {}
 
     /* ----------------------------------------------------- */
 
@@ -37,9 +37,9 @@ public class SystemInReader extends AbstractBehavior<SystemInReader.Command> {
     public static final class Read implements Command {}
 
     public static final class Subscribe implements Command {
-        final ActorRef<FromSystemIn> subscriber;
+        final ActorRef<Publish> subscriber;
 
-        public Subscribe(ActorRef<FromSystemIn> subscriber) {
+        public Subscribe(ActorRef<Publish> subscriber) {
             this.subscriber = subscriber;
         }
     }
@@ -52,10 +52,10 @@ public class SystemInReader extends AbstractBehavior<SystemInReader.Command> {
         }
     }
 
-    public static final class FromSystemIn implements Bootstrapper.Command {
+    public static final class Publish implements Bootstrapper.Command {
         public final String line;
 
-        public FromSystemIn(String line) {
+        public Publish(String line) {
             this.line = line;
         }
     }
@@ -91,8 +91,8 @@ public class SystemInReader extends AbstractBehavior<SystemInReader.Command> {
 
     private void handleLine(String line) {
         getContext().getLog().info("Read line from system in: '{}'", line);
-        for (ActorRef<FromSystemIn> subscriber : subscribers.values()) {
-            subscriber.tell(new FromSystemIn(line));
+        for (ActorRef<Publish> subscriber : subscribers.values()) {
+            subscriber.tell(new Publish(line));
         }
     }
 
